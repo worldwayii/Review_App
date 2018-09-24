@@ -11,6 +11,34 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+
+Auth::routes();
+
+Route::get('/', 'HomeController@index');
+
+// Authentication routes
+// Route::get('register', 'Auth\RegisterController@getRegister');
+Route::post('store','Auth\RegisterController@storeUser');
+Route::get('login', [ 'as' => 'login', 'uses' => 'Auth\LoginController@getLogin']);
+Route::post('authenticate', 'Auth\LoginController@login');
+
+	Route::get('create', 'ItemController@create');
+
+Route::group(['prefix' => 'item'], function() {
+
+	Route::get('/{sku}', 'ItemController@showItem');
+	Route::post('/add', 'ItemController@store');
+	Route::get('edit/{sku}', 'ItemController@edit');
+	Route::post('update', 'ItemController@update');
+	Route::get('/delete/{sku}', 'ItemController@destroy');
+
+
+	//post review route
+	Route::get('review/{sku}', 'ItemController@getReview')->middleware('auth');
+	Route::post('review/store', 'ItemController@storeReview');
+
+	Route::get('review/edit/{id}', 'ItemController@editReview');
+	Route::post('review/update', 'ItemController@updateReview');
+	Route::get('review/delete/{id}', 'ItemController@destroyReview');
 });
