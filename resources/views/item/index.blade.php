@@ -74,29 +74,30 @@
                         <button class="btn btn-success" style="float: right; padding: 4px" data-toggle="modal" data-target="#myModal"> Sort by Latest review</button>
                         <button class="btn btn-success" style="float: right; padding: 4px" data-toggle="modal" data-target="#ratingModal"> Sort by Highest rating</button>
                         <div>
-                            @foreach($item->reviews as $review)
-                            <b>By: {{$review->user->full_name}}</b>
-                            @if($review->rating == 1)
-                            <small class="text-muted">&#9733; </small>
-                            @elseif($review->rating == 2)
-                            <small class="text-muted">&#9733; &#9733; </small>
-                            @elseif($review->rating == 3)
-                            <small class="text-muted">&#9733; &#9733; &#9733; </small>
-                            @elseif($review->rating == 4)
-                            <small class="text-muted">&#9733; &#9733; &#9733; &#9733; </small>
-                            @elseif($review->rating == 5)
-                            <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9733; </small>
-                            @endif
-                            <p>{{$review->comment}}</p>
-                            @if(Auth::check())
-                            @if(Auth::user()->id == $review->user_id || Auth::user()->role_id == 2)
-                            <a href="{{url('item/review/edit/'.$review->id)}}"><button class="btn btn-info">Edit</button></a>
-                            <a href="{{url('item/review/delete/'.$review->id)}}"><button class="btn btn-danger">Delete</button><br><br>
+                            @foreach($itemReviews as $review)
+                                <b>By: {{$review->user->full_name}}</b>
+                                @if($review->rating == 1)
+                                <small class="text-muted">&#9733; </small>
+                                @elseif($review->rating == 2)
+                                <small class="text-muted">&#9733; &#9733; </small>
+                                @elseif($review->rating == 3)
+                                <small class="text-muted">&#9733; &#9733; &#9733; </small>
+                                @elseif($review->rating == 4)
+                                <small class="text-muted">&#9733; &#9733; &#9733; &#9733; </small>
+                                @elseif($review->rating == 5)
+                                <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9733; </small>
                                 @endif
+                                <p>{{$review->comment}}</p>
+                                @if(Auth::check())
+                                    @if(Auth::user()->id == $review->user_id || Auth::user()->role_id == 2)
+                                    <a href="{{url('item/review/edit/'.$review->id)}}"><button class="btn btn-info">Edit</button></a>
+                                    <a href="{{url('item/review/delete/'.$review->id)}}"><button class="btn btn-danger">Delete</button><br><br>
+                                    @endif
                                 @endif
-                                @endforeach
+                            @endforeach
                             </div>
                         </div>
+                            {{ $itemReviews->links() }}
                         <!-- Add to Cart Form -->
                     </div>
                 </div>

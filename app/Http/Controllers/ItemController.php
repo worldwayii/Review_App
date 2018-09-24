@@ -6,8 +6,9 @@ use Session;
 use App\Models\Item;
 use App\Models\Image;
 use App\Models\Review;
-use App\Models\Manufacturer;
 use Illuminate\Http\Request;
+use App\Models\Manufacturer;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
@@ -84,9 +85,10 @@ class ItemController extends Controller
     public function showItem($sku)
     {
         $item = Item::where('sku', $sku)->with('images')->with('manufacturer')->first();
+        $itemReviews = Review::where('item_id', $item->id)->paginate(5);
         $reviews = Review::where('item_id', $item->id)->orderBy('created_at', 'desc')->get();
         $ratings = Review::where('item_id', $item->id)->orderBy('rating', 'desc')->get();
-        return view('item.index', compact('item', 'reviews', 'ratings'));
+        return view('item.index', compact('item', 'itemReviews', 'reviews', 'ratings'));
     }
 
     /**
