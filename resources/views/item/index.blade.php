@@ -18,25 +18,48 @@
                 </div>
                 @endif
                 <div class="single_product_thumb">
-                    <div id="product_details_slider" class="carousel slide" data-ride="carousel">
-                        <ol class="carousel-indicators">
-                            @foreach($item->images as $image)
-                            <li class="active" data-target="#product_details_slider" data-slide-to="0"
+                    <div id="product_details_sliderproduct_details_slider" class="carousel slide" data-ride="carousel">
+                        {{-- <ol class="carousel-indicators">
+                            @foreach($item->images as $key => $image)
+                            <li class="active" data-target="#product_details_slider" data-slide-to="{{$key}}"
                                 style="background-image: url({{Storage::url($image->path)}});">
                             </li>
                             @endforeach
-                        </ol>
-                        <div class="carousel-inner">
-                            @foreach($item->images as $image)
-                            <div class="carousel-item active">
-                                <a class="gallery_img" href="{{Storage::url($image->path)}}">
-                                    <img class="d-block w-100" src="{{Storage::url($image->path)}}" alt="First slide">
-                                </a>
+                        </ol> --}}
+                        @if(count($item->images) == 1)
+                            <div class="carousel-inner">
+                                @foreach($item->images as $image)
+                                <div class="carousel-item active">
+                                    <a class="gallery_img" href="{{Storage::url($image->path)}}">
+                                        <img class="d-block w-100" src="{{Storage::url($image->path)}}" alt="First slide">
+                                    </a>
+                                </div>
+                                <b>Default Image</b>
+                                @endforeach
                             </div>
-                            @endforeach
-                        </div>
+                        @else
+                            <div class="carousel-indicators">
+                                @foreach($item->images as $image)
+                                <div class="carousel-item active" style="padding: 4px;">
+                                    <a class="gallery_img" href="{{Storage::url($image->path)}}">
+                                        <img class="d-block w-100" src="{{Storage::url($image->path)}}" alt="First slide">
+                                    </a>
+                                </div>
+                                @if($image->user_id !== NULL)
+                                <div><b>Uploaded by:</b>{{$image->user->full_name}}</div>
+                                @else
+                                <div><b>Default Image</b></div>
+                                @endif
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
                 </div>
+                @if(Auth::check())
+                    <a href="{{ url('item/image/'.$item->sku)}}">
+                        <button class="btn btn-large btn-success " >Add more Image</button>
+                    </a>
+                @endif
             </div>
             <div class="col-12 col-lg-5">
                 <div class="single_product_desc">
@@ -88,6 +111,15 @@
                                 <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9733; </small>
                                 @endif
                                 <p>{{$review->comment}}</p>
+                                <div >
+                                    <a href="{{url('vote/like/'.$review->id)}}"><i class="fa fa-lg fa-thumbs-up"></i>
+                                        @if($review->like)
+                                        {{$review->like->count}}
+                                        @else 0 @endif</a>
+                                    <a href="{{url('vote/dislike/'.$review->id)}}"><i class="fa fa-lg fa-thumbs-down"></i>@if($review->dislike)
+                                        {{$review->like->count}}
+                                        @else 0 @endif</a>
+                                </div>
                                 @if(Auth::check())
                                     @if(Auth::user()->id == $review->user_id || Auth::user()->role_id == 2)
                                     <a href="{{url('item/review/edit/'.$review->id)}}"><button class="btn btn-info">Edit</button></a>

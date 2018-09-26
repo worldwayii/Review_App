@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use Session;
 use App\Models\Item;
+use App\Models\Vote;
 use App\Models\Image;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -13,7 +15,21 @@ use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
 {
-    
+     /**
+     * Display the selected Item.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showItem($sku)
+    {
+        $item = Item::where('sku', $sku)->with('images')->with('manufacturer')->first();
+        $itemReviews = Review::where('item_id', $item->id)->paginate(5);
+        $reviews = Review::where('item_id', $item->id)->orderBy('created_at', 'desc')->get();
+        $ratings = Review::where('item_id', $item->id)->orderBy('rating', 'desc')->get();
+        return view('item.index', compact('item', 'itemReviews', 'reviews', 'ratings'));
+    }
+
     /**
      * Show the form for creating a new Item.
      *
@@ -77,21 +93,6 @@ class ItemController extends Controller
     }
 
     /**
-     * Display the selected Item.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function showItem($sku)
-    {
-        $item = Item::where('sku', $sku)->with('images')->with('manufacturer')->first();
-        $itemReviews = Review::where('item_id', $item->id)->paginate(5);
-        $reviews = Review::where('item_id', $item->id)->orderBy('created_at', 'desc')->get();
-        $ratings = Review::where('item_id', $item->id)->orderBy('rating', 'desc')->get();
-        return view('item.index', compact('item', 'itemReviews', 'reviews', 'ratings'));
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id
@@ -138,7 +139,7 @@ class ItemController extends Controller
                 $image = Image::where('iten_id', $request->item_id)->first();
                 $img = Storage::disk('local')->put('public', $request->path);
                 $image->item_id = $item->id;
-                $image->uploader_id = Auth::user()->id;
+                $image->user_id = Auth::user()->id;
                 $image->update();
             }
 
@@ -161,6 +162,48 @@ class ItemController extends Controller
         return redirect('/');
     }
 
+    /**
+     * Show the form for adding more image to and item.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function addImage($sku)
+    { 
+        $item = Item::where('sku', $sku)->with('images')->with('manufacturer')->first();
+        return view('item.upload', compact('item'));
+    }
+
+    /**
+     * Upload new image to a particular Item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function storeImage(Request $request)
+    {
+        $validate = \Validator::make($request->all(), array(
+            'path' => 'required|mimes:jpeg,jpg,png',
+        ));
+        if($validate->fails())
+        {
+            return redirect()->back()->withErrors($validate)->withInput();
+        }
+        else
+        {
+            $img = Storage::disk('local')->put('public', $request->path);
+            $image = new Image();
+            $image->path = $img;
+            $image->item_id = $request->item_id;
+            $image->user_id = Auth::user()->id;
+            $image->save();
+
+            Session::flash('success', 'Image has been added successfully.');
+            return redirect('item/'.$image->item->sku);
+        }
+
+    }
 
      /**
      * Show for for reviewing an Item.
@@ -267,5 +310,84 @@ class ItemController extends Controller
 
         Session::flash('success', 'You have just deleted your review.');
         return redirect('/');
+    }
+
+    /**
+     * like the comment in a review.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function like($id)
+    {
+        
+        //check if the reviewer has liked this particular comment before
+        $checkLike = Vote::where('review_id', $id)
+                            ->where('user_id', Auth::user()->id)
+                            ->where('vote', 1)->first();
+        if(!$checkLike){ 
+            // check if the user has disliked this review previously
+            $checkDislike = Vote::where('review_id', $id)
+                            ->where('user_id', Auth::user()->id)
+                            ->where('vote', 0)->first();
+                           
+            if($checkDislike){
+                 $checkDislike->vote = 1;
+                 $checkDislike->update();
+
+                 Session::flash('success', 'You have now liked this review.');
+                 return back();
+            }
+
+            $like = new Vote();
+            $like->review_id = $id;
+            $like->user_id = Auth::user()->id;
+            $like->vote = 1;
+            $like->save();
+
+            Session::flash('success', 'You just liked a review.');
+            return back();
+        }
+            Session::flash('fail', 'You have already liked the comment.');
+            return back();
+    }
+
+     /**
+     * dislike the comment in a  review.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function dislike($id)
+    {
+        //check if the reviewer has disliked this particular comment before
+         $checkDislike = Vote::where('review_id', $id)
+                            ->where('user_id', Auth::user()->id)
+                            ->where('vote', 0)->first();
+          if(!$checkDislike){ 
+            // check if the user has disliked this review previously
+            $checkLike = Vote::where('review_id', $id)
+                            ->where('user_id', Auth::user()->id)
+                            ->where('vote', 1)->first();
+                           
+            if($checkLike){
+                 $checkLike->vote = 0;
+                 $checkLike->update();
+
+                 Session::flash('success', 'You have now disliked this review.');
+                 return back();
+            }
+
+        $like = new Vote();
+        $like->review_id = $id;
+        $like->user_id = Auth::user()->id;
+        $like->vote = 0;
+        $like->save();
+
+        Session::flash('success', 'You just disliked a review.');
+        return back();
+        }
+         Session::flash('fail', 'You have already disliked the comment.');
+            return back();
     }
 }

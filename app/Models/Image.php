@@ -14,11 +14,16 @@ class Image extends Model
 
     protected $table = 'images';
 
-    protected $fillable = [ 'path', 'item_id', 'uploader_id'];
+    protected $fillable = [ 'path', 'item_id', 'user_id'];
 
 
     public function item()
     {
-    	return $this->BelongsTo(Item::class);
+    	return $this->belongsTo(Item::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User', 'user_id');
     }
 }

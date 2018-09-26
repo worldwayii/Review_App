@@ -23,7 +23,11 @@ Route::post('store','Auth\RegisterController@storeUser');
 Route::get('login', [ 'as' => 'login', 'uses' => 'Auth\LoginController@getLogin']);
 Route::post('authenticate', 'Auth\LoginController@login');
 
-	Route::get('create', 'ItemController@create');
+Route::get('create', 'ItemController@create');
+
+//routes for voting likes and dislikes
+Route::get('vote/like/{id}', 'ItemController@like')->middleware('auth');
+Route::get('vote/dislike/{id}', 'ItemController@dislike')->middleware('auth');
 
 Route::group(['prefix' => 'item'], function() {
 
@@ -32,7 +36,8 @@ Route::group(['prefix' => 'item'], function() {
 	Route::get('edit/{sku}', 'ItemController@edit');
 	Route::post('update', 'ItemController@update');
 	Route::get('/delete/{sku}', 'ItemController@destroy');
-
+	Route::get('image/{sku}', 'ItemController@addImage');
+	Route::post('/addImage', 'ItemController@storeImage');
 
 	//post review route
 	Route::get('review/{sku}', 'ItemController@getReview')->middleware('auth');

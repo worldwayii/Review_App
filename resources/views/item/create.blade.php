@@ -21,7 +21,7 @@
                                             {{Session::get('fail')}}
                                         </div>
                                         @endif
-                            <form method="POST" action="{{('item/add')}}" enctype="multipart/form-data">
+                            <form method="POST" action="{{url ('item/add')}}" enctype="multipart/form-data">
                                     {{ csrf_field() }}
                                 <div class="row">
                                     <div class="col-12 mb-3 {{ ($errors->has('item_name')) ? 'has-error' : ''}}">

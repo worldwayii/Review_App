@@ -19,7 +19,7 @@ class Item extends Model
     //Defining relationship between Item and manufacturer
     public function manufacturer()
     {
-    	return $this->BelongsTo('App\Models\Manufacturer', 'manufacturer_id');
+    	return $this->belongsTo('App\Models\Manufacturer', 'manufacturer_id');
     }
 
     //relationship for reviews

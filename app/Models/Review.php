@@ -25,4 +25,10 @@ class Review extends Model
     {
         return $this->belongsTo('App\Models\User', 'user_id');
     }
+
+    public function votes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
 }

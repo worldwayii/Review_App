@@ -20,7 +20,7 @@
                 @foreach($items as $item)
                     <div class="single-products-catagory clearfix">
                         <a href="{{url('item/'.$item->sku)}}">
-                            @foreach($item->images as $image)
+                            @foreach($item->images->slice(0, 1) as $image)
                             <img src="{{Storage::url($image->path)}}" alt="">
                             @endforeach
                             <!-- Hover Content -->
