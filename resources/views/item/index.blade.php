@@ -113,12 +113,23 @@
                                 <p>{{$review->comment}}</p>
                                 <div >
                                     <a href="{{url('vote/like/'.$review->id)}}"><i class="fa fa-lg fa-thumbs-up"></i>
-                                        @if($review->like)
-                                        {{$review->like->count}}
-                                        @else 0 @endif</a>
-                                    <a href="{{url('vote/dislike/'.$review->id)}}"><i class="fa fa-lg fa-thumbs-down"></i>@if($review->dislike)
-                                        {{$review->like->count}}
-                                        @else 0 @endif</a>
+                                        <?php $likes = 0; ?>
+                                        @foreach($review->votes as $vote)
+                                            @if($vote->vote == 1)
+                                                <?php $likes += 1; ?>
+                                            @endif
+                                        @endforeach
+                                        {{$likes}}
+                                    </a>
+                                    <a href="{{url('vote/dislike/'.$review->id)}}"><i class="fa fa-lg fa-thumbs-down"></i>
+                                     <?php $disLikes = 0; ?>
+                                        @foreach($review->votes as $vote)
+                                            @if($vote->vote == 0)
+                                                <?php $disLikes += 1; ?>
+                                            @endif
+                                        @endforeach
+                                        {{$disLikes}}
+                                    </a>
                                 </div>
                                 @if(Auth::check())
                                     @if(Auth::user()->id == $review->user_id || Auth::user()->role_id == 2)
@@ -127,6 +138,7 @@
                                     @endif
                                 @endif
                             @endforeach
+
                             </div>
                         </div>
                             {{ $itemReviews->links() }}

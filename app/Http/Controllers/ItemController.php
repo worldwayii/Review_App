@@ -24,7 +24,7 @@ class ItemController extends Controller
     public function showItem($sku)
     {
         $item = Item::where('sku', $sku)->with('images')->with('manufacturer')->first();
-        $itemReviews = Review::where('item_id', $item->id)->paginate(5);
+        $itemReviews = Review::where('item_id', $item->id)->with('votes')->paginate(5);
         $reviews = Review::where('item_id', $item->id)->orderBy('created_at', 'desc')->get();
         $ratings = Review::where('item_id', $item->id)->orderBy('rating', 'desc')->get();
         return view('item.index', compact('item', 'itemReviews', 'reviews', 'ratings'));

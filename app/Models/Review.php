@@ -28,7 +28,7 @@ class Review extends Model
 
     public function votes()
     {
-        return $this->hasMany(Like::class);
+        return $this->hasMany('App\Models\Vote', 'review_id');
     }
 
 }
