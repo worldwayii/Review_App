@@ -24,6 +24,7 @@ Route::get('login', [ 'as' => 'login', 'uses' => 'Auth\LoginController@getLogin'
 Route::post('authenticate', 'Auth\LoginController@login');
 
 Route::get('create', 'ItemController@create');
+Route::get('docs', 'ItemController@getDocs');
 
 //routes for voting likes and dislikes
 Route::get('vote/like/{id}', 'ItemController@like')->middleware('auth');

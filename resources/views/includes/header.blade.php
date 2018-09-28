@@ -37,6 +37,8 @@
                 <li><a href="{{route('login')}}">Login</a></li>
                 <li><a href="{{route('register')}}">Register</a></li>
                 @endif
+                <li><a href="{{url('docs')}}">Documentation</a></li>
+
                 @if(Auth::check())
                 <li>
                     <a href="{{ route('logout') }}"

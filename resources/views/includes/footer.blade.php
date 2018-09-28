@@ -27,10 +27,10 @@
                                         <a class="nav-link" href="{{url('/')}}">Home</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#">Items</a>
+                                        <a class="nav-link" href="{{url('create')}}">Create Item</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#">Documentation</a>
+                                        <a class="nav-link" href="{{url('docs')}}">Documentation</a>
                                     </li>
                                     
                                     </li>

@@ -473,4 +473,15 @@ class ItemController extends Controller
         $followers = Follower::where('follower_id', $id)->get();
         return view('item.user.friends', compact('followers'));
     }
+
+    /**
+     * Show system documentation
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function getDocs()
+    {
+        return view('item.docs');
+    }
 }
