@@ -41,7 +41,21 @@
                     
                 </div>
             </div>
-            <div class="col-12 col-lg-4">
+            <div class="col-12 col-lg-4" style="margin-top: 120px;">
+                    <div style=" box-shadow: 0px 0px 5px 0px; padding: 10px;">
+                       <h6>People You May Follow</h6>
+                         @foreach($recommends->slice(1, 3) as $recommendedUser)
+                            @if($recommendedUser->user->id != Auth::user()->id)
+                                <div class="col-sm-2">
+                                    <img src="https://www.infrascan.net/demo/assets/img/avatar5.png" class="img-rounded" width="60px"> {{$recommendedUser->user->full_name}}
+                                    <a href="{{url('follow/'.$recommendedUser->user->id)}}">
+                                        <button class="btn-info" >  Follow
+                                        </button>
+                                    </a>
+                                </div>
+                            @endif
+                          @endforeach
+                    </div>
                 
             </div>
         </div>

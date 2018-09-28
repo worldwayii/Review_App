@@ -30,7 +30,7 @@ Route::get('vote/like/{id}', 'ItemController@like')->middleware('auth');
 Route::get('vote/dislike/{id}', 'ItemController@dislike')->middleware('auth');
 Route::get('follow/{id}', 'ItemController@follow')->middleware('auth');
 Route::get('unfollow/{id}', 'ItemController@unfollow')->middleware('auth');
-Route::get('followers', 'ItemController@showFollowers');
+Route::get('followers', 'ItemController@showFollowers')->middleware('auth');
 
 Route::get('user/reviews/{id}', 'ItemController@showUserReviews');
 Route::get('user/followers/{id}', 'ItemController@showUserFriends');
@@ -42,7 +42,7 @@ Route::group(['prefix' => 'item'], function() {
 	Route::get('edit/{sku}', 'ItemController@edit');
 	Route::post('update', 'ItemController@update');
 	Route::get('/delete/{sku}', 'ItemController@destroy');
-	Route::get('image/{sku}', 'ItemController@addImage');
+	Route::get('image/{sku}', 'ItemController@addImage')->middleware('auth');
 	Route::post('/addImage', 'ItemController@storeImage');
 
 	//post review route

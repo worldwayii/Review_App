@@ -29,7 +29,8 @@ class ItemController extends Controller
         $itemReviews = Review::where('item_id', $item->id)->with('votes')->paginate(5);
         $reviews = Review::where('item_id', $item->id)->orderBy('created_at', 'desc')->get();
         $ratings = Review::where('item_id', $item->id)->orderBy('rating', 'desc')->get();
-        return view('item.index', compact('item', 'itemReviews', 'reviews', 'ratings'));
+        $recommends = Review::distinct()->where('item_id', '>', 1)->get();
+        return view('item.index', compact('item', 'itemReviews', 'reviews', 'ratings', 'recommends'));
     }
 
     /**
@@ -445,7 +446,8 @@ class ItemController extends Controller
     public function showFollowers()
     {
         $followers = Follower::where('follower_id', Auth::user()->id)->get();
-        return view('item.user.followers', compact('followers'));
+        $recommends = Review::distinct()->where('item_id', '>', 1)->get();
+        return view('item.user.followers', compact('followers', 'recommends'));
     }
 
     /**

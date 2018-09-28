@@ -19,13 +19,6 @@
                 @endif
                 <div class="single_product_thumb">
                     <div id="product_details_sliderproduct_details_slider" class="carousel slide" data-ride="carousel">
-                        {{-- <ol class="carousel-indicators">
-                            @foreach($item->images as $key => $image)
-                            <li class="active" data-target="#product_details_slider" data-slide-to="{{$key}}"
-                                style="background-image: url({{Storage::url($image->path)}});">
-                            </li>
-                            @endforeach
-                        </ol> --}}
                         @if(count($item->images) == 1)
                             <div class="carousel-inner">
                                 @foreach($item->images as $image)
@@ -54,13 +47,26 @@
                             </div>
                         @endif
                     </div>
+                    
                 </div>
-                @if(Auth::check())
                     <a href="{{ url('item/image/'.$item->sku)}}">
                         <button class="btn btn-large btn-success " >Add more Image</button>
                     </a>
-                @endif
+              
+                    <h5 style="margin-top: 15px; font-family: helvetica;"><i>Items you may like</i></h5>
+            
+                      @foreach($recommends->slice(1, 3) as $recommended)
+                        @if($recommended->item->id != $item->id)
+                            @foreach($recommended->item->images->slice(0, 1) as $recomendImg)
+                                <a href="{{url('item/.$recommended->item->sku')}}"><img src="{{Storage::url($recomendImg->path)}}" class="img-rounded" width="60px"></a>
+                            @endforeach
+                            <h6 style="margin: 5px;">{{$recommended->item->name}}</h6>
+                        @endif
+                      @endforeach
+                    
+               
             </div>
+            
             <div class="col-12 col-lg-5">
                 <div class="single_product_desc">
                     <!-- Product Meta Data -->

@@ -1395,6 +1395,15 @@ img {
     border-radius: 0;
     background-color: #f5f7fa; }
 
+#recommendation {
+  width:1000px; 
+  margin:0 auto 0 auto; 
+  text-align:center;
+}
+#recommendation div {
+  display:inline-block;
+}
+
 /* ##### The End ##### */
 
 /*# sourceMappingURL=core-style.css.map */

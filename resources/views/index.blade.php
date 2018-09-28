@@ -21,7 +21,7 @@
                     <div class="single-products-catagory clearfix">
                         <a href="{{url('item/'.$item->sku)}}">
                             @foreach($item->images->slice(0, 1) as $image)
-                            <img src="{{Storage::url($image->path)}}" alt="">
+                                <img src="{{Storage::url($image->path)}}" alt="">
                             @endforeach
                             <!-- Hover Content -->
                             <div class="hover-content">

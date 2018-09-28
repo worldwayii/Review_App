@@ -27,9 +27,11 @@
             <ul>
                 <li class="active"><a href="{{url('/')}}">Home</a></li>
                 <li><a href="{{url('create')}}">Add Item</a></li>
-                <?php $hasFollowing = App\Models\Follower::where('follower_id', Auth::user()->id)->get(); ?>
-                @if(Auth::check() && $hasFollowing)
-                    <li><a href="{{ url('followers') }}">Followings</a></li>
+                @if(Auth::check())
+                    <?php $hasFollowing = App\Models\Follower::where('follower_id', Auth::user()->id)->get(); ?>
+                    @if($hasFollowing)
+                        <li><a href="{{ url('followers') }}">Followings</a></li>
+                    @endif
                 @endif
                 @if(!Auth::check())
                 <li><a href="{{route('login')}}">Login</a></li>
