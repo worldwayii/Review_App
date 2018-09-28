@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Auth;
 use Session;
+use App\Models\User;
 use App\Models\Item;
 use App\Models\Vote;
 use App\Models\Image;
 use App\Models\Review;
+use App\Models\Follower;
 use Illuminate\Http\Request;
 use App\Models\Manufacturer;
 use Illuminate\Support\Facades\DB;
@@ -388,6 +390,85 @@ class ItemController extends Controller
         return back();
         }
          Session::flash('fail', 'You have already disliked the comment.');
+         return back();
+    }
+
+
+    /**
+     * follow a reviewer.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function follow($id)
+    {
+        $user = User::find($id);
+ 
+        if(Auth::user()->id == $id){
+            Session::flash('fail', 'You can\'t follow yourself.');
             return back();
+        }
+        //also check if the $id has been followed before
+        $followedUser = Follower::where('follower_id', Auth::user()->id)
+                                    ->where('followee_id', $id)->first();
+
+            $follower = New Follower();
+            $follower->follower_id = Auth::user()->id;
+            $follower->followee_id = $id;
+            $follower->save();
+
+            Session::flash('success', 'You just followed '.$user->full_name);
+            return redirect('followers');
+    }
+
+    /**
+     * unfollow a reviewer.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function unfollow($id)
+    {
+        // the follower_id has been passed, so we just delete the record
+        $follower = Follower::find($id)->delete();
+
+        Session::flash('success', 'You just unfollwed a user');
+        return redirect('followers');
+    }
+
+    /**
+     * Show the user followed by an authenticated user.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showFollowers()
+    {
+        $followers = Follower::where('follower_id', Auth::user()->id)->get();
+        return view('item.user.followers', compact('followers'));
+    }
+
+    /**
+     * Show reviewed made by a chosen user in auth user's friend list.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showUserReviews($id)
+    {
+        $reviews = Review::where('user_id', $id)->get();
+        return view('item.user.reviews', compact('reviews'));
+    }
+
+    /**
+     * Show users followed by this particular user
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showUserFriends($id)
+    {
+        $followers = Follower::where('follower_id', $id)->get();
+        return view('item.user.friends', compact('followers'));
     }
 }

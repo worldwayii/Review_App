@@ -33,4 +33,14 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Image', 'user_id');
     }
+
+    public function reviews()
+    {
+        return $this->hasMany('App\Models\Review', 'user_id');
+    }
+
+    public function followers()
+    {
+        return $this->hasMany('App\Models\Follower', 'followee_id');
+    }
 }

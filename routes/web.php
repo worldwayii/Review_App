@@ -28,6 +28,12 @@ Route::get('create', 'ItemController@create');
 //routes for voting likes and dislikes
 Route::get('vote/like/{id}', 'ItemController@like')->middleware('auth');
 Route::get('vote/dislike/{id}', 'ItemController@dislike')->middleware('auth');
+Route::get('follow/{id}', 'ItemController@follow')->middleware('auth');
+Route::get('unfollow/{id}', 'ItemController@unfollow')->middleware('auth');
+Route::get('followers', 'ItemController@showFollowers');
+
+Route::get('user/reviews/{id}', 'ItemController@showUserReviews');
+Route::get('user/followers/{id}', 'ItemController@showUserFriends');
 
 Route::group(['prefix' => 'item'], function() {
 

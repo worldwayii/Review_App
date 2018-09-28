@@ -38,7 +38,7 @@
                                 @endforeach
                             </div>
                         @else
-                            <div class="carousel-indicators">
+                            <div class="carousel-indicators" style="margin-bottom: 15px;">
                                 @foreach($item->images as $image)
                                 <div class="carousel-item active" style="padding: 4px;">
                                     <a class="gallery_img" href="{{Storage::url($image->path)}}">
@@ -110,6 +110,20 @@
                                 @elseif($review->rating == 5)
                                 <small class="text-muted">&#9733; &#9733; &#9733; &#9733; &#9733; </small>
                                 @endif
+                                @if(Auth::check() && Auth::user()->id !== $review->user_id)
+                                    <?php $following = App\Models\Follower::where('follower_id', Auth::user()->id)->where('followee_id', $review->user_id)->first(); ?>
+                                    @if($following)
+                                        <a href="{{url('unfollow/'.$following->id)}}">
+                                            <button class="btn-info" style="float: right; margin-top: 2px;">  Unfollow
+                                            </button>
+                                        </a>
+                                    @else
+                                        <a href="{{url('follow/'.$review->user_id)}}">
+                                            <button class="btn-info" style="float: right; margin-top: 2px;">  Follow
+                                            </button>
+                                        </a>
+                                    @endif
+                                @endif
                                 <p>{{$review->comment}}</p>
                                 <div >
                                     <a href="{{url('vote/like/'.$review->id)}}"><i class="fa fa-lg fa-thumbs-up"></i>
@@ -124,7 +138,7 @@
                                     <a href="{{url('vote/dislike/'.$review->id)}}"><i class="fa fa-lg fa-thumbs-down"></i>
                                      <?php $disLikes = 0; ?>
                                         @foreach($review->votes as $vote)
-                                            @if($vote->vote == 0)
+                                            @if($vote->vote == 0 )
                                                 <?php $disLikes += 1; ?>
                                             @endif
                                         @endforeach
