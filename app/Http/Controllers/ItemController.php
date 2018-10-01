@@ -139,8 +139,9 @@ class ItemController extends Controller
             $item->update();
 
             if($request->path){
-                $image = Image::where('iten_id', $request->item_id)->first();
+                $image = Image::where('item_id', $request->item_id)->first();
                 $img = Storage::disk('local')->put('public', $request->path);
+                $image->path = $img;
                 $image->item_id = $item->id;
                 $image->user_id = Auth::user()->id;
                 $image->update();

@@ -85,7 +85,7 @@
                         </div>
                         @endif
                         <h5>{{$item->name}}</h5>
-                        <h6>Link: {{$item->url}}</h6>
+                        <h6>Link: <a href="" target="_blank">{{$item->url}}</a></h6>
                         <h6>Manufacutured By: {{$item->manufacturer->name}}</h6>
                         <!-- Ratings & Review -->
                         <div class="ratings-review mb-15 d-flex align-items-center justify-content-between">

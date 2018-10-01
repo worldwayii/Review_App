@@ -32,4 +32,10 @@ class Item extends Model
     {
         return $this->hasMany('App\Models\Image', 'item_id');
     }
+
+    static function after ($whr, $inthat)
+    {
+        if (!is_bool(strpos($inthat, $whr)))
+        return substr($inthat, strpos($inthat,$whr)+strlen($whr));
+    }
 }

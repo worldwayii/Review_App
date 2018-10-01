@@ -21,7 +21,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $items = Item::has('images')->with('images')->get();
+        $items = Item::all();
         return view('index', compact('items'));
     }
 }
